@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    testImplementation 'junit:junit:4.12'
+    implementation files('libs/zxing-core-3.3.2.jar')
+}
+
+def SDK_BASENAME = "TestSdk"
+def SDK_VERSION = "_V1.0"
+def sdkDestinationPath = "build/libs/"
+
+
+task makeJar(type: Copy) {
+    delete sdkDestinationPath + SDK_BASENAME + SDK_VERSION + ".jar"
+    from('build/intermediates/intermediate-jars/release/')
+    into(sdkDestinationPath)
+    include('classes.jar')
+    from fileTree(dir: 'src/main', includes: ['res/**'])
+    rename('classes.jar', SDK_BASENAME + SDK_VERSION + ".jar")
+}
+
+makeJar.dependsOn(build)
