@@ -1,11 +1,14 @@
 package net.bupt.paylibrary;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 
@@ -16,19 +19,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BuptPayActivity extends AppCompatActivity {
+public class BuptPayActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "BuptPayActivity";
 
-    private ImageView imageView,imageView2;
+    private Button zhiButton, wechatButton;
+
+    private ImageView imageView;
     Call<JsonElement> call;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bupt_pay);
-        imageView = findViewById(R.id.show);
-        imageView2 = findViewById(R.id.show2);
+
+        imageView = findViewById(R.id.image);
+        zhiButton = findViewById(R.id.zhiBtn);
+        wechatButton = findViewById(R.id.wechatBtn);
+        zhiButton.setOnClickListener(this);
+        wechatButton.setOnClickListener(this);
 
         call = RequestHelper.getInstance().getCoursebyId();
 
@@ -39,7 +48,6 @@ public class BuptPayActivity extends AppCompatActivity {
                 System.out.println(" " + response.body().toString());
                 Bitmap test = BuptPayUtils.encodeAsBitmap(response.body().toString(), dimension);
                 imageView.setImageBitmap(test);
-                imageView2.setImageBitmap(test);
             }
 
             @Override
@@ -47,7 +55,6 @@ public class BuptPayActivity extends AppCompatActivity {
                 System.out.println("onFailure  " + t.getMessage());
                 Bitmap test = BuptPayUtils.encodeAsBitmap("test", dimension);
                 imageView.setImageBitmap(test);
-                imageView2.setImageBitmap(test);
             }
         });
 
@@ -62,5 +69,15 @@ public class BuptPayActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onClick(View view) {
+
+        int i = view.getId();
+        if (i == R.id.zhiBtn) {
+            Toast.makeText(this, "支付宝", Toast.LENGTH_SHORT).show();
+        } else if (i == R.id.wechatBtn) {
+            Toast.makeText(this, "微信", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
 

@@ -26,7 +26,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
-    implementation files('libs/zxing-core-3.3.2.jar')
 }
 
 def SDK_BASENAME = "TestSdk"
