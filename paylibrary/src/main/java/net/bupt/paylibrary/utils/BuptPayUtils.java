@@ -52,17 +52,15 @@ public class BuptPayUtils {
             bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
             bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
 
-            Log.d(TAG, "-w-" + w);
-            Log.d(TAG, "-h-" + h);
-            Log.d(TAG, "-width-" + bitmap.getWidth());
-            Log.d(TAG, "-height-" + bitmap.getHeight());
+//            Log.d(TAG, "-w-" + w);
+//            Log.d(TAG, "-h-" + h);
+//            Log.d(TAG, "-width-" + bitmap.getWidth());
+//            Log.d(TAG, "-height-" + bitmap.getHeight());
 
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Log.e("BuptPayActivity", e.getMessage());
+            bitmap = null;
+//            e.printStackTrace();
         }
         return bitmap;
     }

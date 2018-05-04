@@ -15,6 +15,10 @@ import retrofit2.http.POST;
 public interface RequestApiService {
 
     @FormUrlEncoded
-    @POST("course/test1")
-    Call<JsonElement> getCoursebyId(@Field("courseId") String courseId, @Field("courseName") String courseName);
+    @POST("pay/prepay.do")
+    Call<JsonElement> getData(@Field("cardno") String cardno,
+                                    @Field("prodcode") String prodcode,
+                                    @Field("description") String description,
+                                    @Field("totalAmount") String totalAmount
+    );
 }

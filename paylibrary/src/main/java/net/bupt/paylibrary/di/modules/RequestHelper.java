@@ -38,11 +38,12 @@ public class RequestHelper {
      */
     public void init() {
         Requester.initBuilder(BuildConfig.DEBUG, 60);
-        requestAPI = Requester.getRequestAPI("http://192.168.11.19:8080/Demo/", RequestApiService.class);
+        requestAPI = Requester.getRequestAPI("http://182.18.26.6:8080/PaymentPlatform/", RequestApiService.class);
     }
 
-    public Call<JsonElement> getCoursebyId() {
-        return requestAPI.getCoursebyId("1", "测试")
+    public Call<JsonElement> getData(String cardno, String prodcode,
+                                           String description, String total) {
+        return requestAPI.getData(cardno, prodcode, description, total)
                 ;
     }
 }
