@@ -17,8 +17,12 @@ public interface RequestApiService {
     @FormUrlEncoded
     @POST("pay/prepay.do")
     Call<JsonElement> getData(@Field("cardno") String cardno,
-                                    @Field("prodcode") String prodcode,
-                                    @Field("description") String description,
-                                    @Field("totalAmount") String totalAmount
+                              @Field("prodcode") String prodcode,
+                              @Field("description") String description,
+                              @Field("totalAmount") String totalAmount
     );
+
+    @FormUrlEncoded
+    @POST("pay/payresult.do")
+    Call<JsonElement> validate(@Field("out_trade_no") String out_trade_no);
 }

@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Requester {
     private static final int CONNECT_TIMEOUT = 30;  //请求超时时间，单位：s
-    private static final int READ_TIMEOUT = 300;       //读写超时时间，单位：s
+    private static final int READ_TIMEOUT = 30;       //读写超时时间，单位：s
 
     private static OkHttpClient.Builder builder;
 

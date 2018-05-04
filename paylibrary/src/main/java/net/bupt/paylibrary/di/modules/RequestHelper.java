@@ -37,13 +37,16 @@ public class RequestHelper {
      * 初始化网络请求
      */
     public void init() {
-        Requester.initBuilder(BuildConfig.DEBUG, 60);
+        Requester.initBuilder(BuildConfig.DEBUG, 30);
         requestAPI = Requester.getRequestAPI("http://182.18.26.6:8080/PaymentPlatform/", RequestApiService.class);
     }
 
     public Call<JsonElement> getData(String cardno, String prodcode,
-                                           String description, String total) {
-        return requestAPI.getData(cardno, prodcode, description, total)
-                ;
+                                     String description, String total) {
+        return requestAPI.getData(cardno, prodcode, description, total);
+    }
+
+    public Call<JsonElement> validate(String out_trade_no) {
+        return requestAPI.validate(out_trade_no);
     }
 }
