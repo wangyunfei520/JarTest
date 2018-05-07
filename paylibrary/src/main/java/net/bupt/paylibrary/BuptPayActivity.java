@@ -2,8 +2,10 @@ package net.bupt.paylibrary;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 
@@ -18,10 +20,13 @@ import android.widget.Toast;
 import com.google.gson.JsonElement;
 
 import net.bupt.paylibrary.center.PayCenter;
+import net.bupt.paylibrary.entity.PayEntity;
 import net.bupt.paylibrary.utils.BuptPayUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.Serializable;
 
 import retrofit2.Call;
 
@@ -39,11 +44,14 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
     Call<JsonElement> call;
 
     Dialog dialog;
+    PayEntity entity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bupt_pay);
+        Intent intent = getIntent();
+        entity = (PayEntity) intent.getSerializableExtra("data");
         handler = new Handler();
 
         showTextView = findViewById(R.id.show);
@@ -68,42 +76,43 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
         dialog = BuptPayUtils.createLoadingDialog(this, "正在请求数据");
         dialog.show();
         final int dimension = (int) getResources().getDimension(R.dimen.image_size);
-        call = PayCenter.getInstance().getData("122332", "123", "test",
-                "0.01", new CallBackResponseContent() {
-                    @Override
-                    public void getResponseContent(String data) {
-                        dialog.dismiss();
-                        Bitmap result = null;
-                        try {
-                            final JSONObject object = new JSONObject(data);
-                            if (object.getInt("status") != 0) {
-                                service_error();
-                                return;
-                            }
-                            JSONObject objectJSONObject = object.getJSONObject("data");
-                            result = BuptPayUtils.encodeAsBitmap(objectJSONObject.getString("code_url"), dimension);
-                            if (result == null) {
-                                data_error();
-                                return;
-                            }
-                            showTextView.setText("请使用微信扫码支付");
-                            imageView.setImageBitmap(result);
-                            String sn = objectJSONObject.getString("sn");
-                            validate(sn);
-                        } catch (JSONException e) {
-                            data_error();
-                            Log.e(TAG, e.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void getFailContent(String result) {
-                        dialog.dismiss();
+        call = PayCenter.getInstance().getData(entity, new CallBackResponseContent() {
+            @Override
+            public void getResponseContent(String data) {
+                dialog.dismiss();
+                Bitmap result = null;
+                try {
+                    final JSONObject object = new JSONObject(data);
+                    if (object.getInt("status") != 0) {
                         service_error();
-                        Log.e(TAG, "onFailure  " + result);
+                        return;
                     }
-                });
+                    JSONObject objectJSONObject = object.getJSONObject("data");
+                    result = BuptPayUtils.encodeAsBitmap(objectJSONObject.getString("code_url"), dimension);
+                    if (result == null) {
+                        data_error();
+                        return;
+                    }
+                    showTextView.setText("请使用微信扫码支付");
+                    imageView.setImageBitmap(result);
+                    String sn = objectJSONObject.getString("sn");
+                    validate(sn);
+                } catch (JSONException e) {
+                    data_error();
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+
+            @Override
+            public void getFailContent(String result) {
+                dialog.dismiss();
+                service_error();
+                Log.e(TAG, "onFailure  " + result);
+            }
+        });
     }
+
+    CountDownTimer timer = null;
 
     private void validate(final String sn) {
         cancleValide();
@@ -116,23 +125,24 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
                         try {
                             JSONObject object = new JSONObject(result);
                             int status = object.getInt("status");
-                            if (status != 0) {
-                                imageView.setVisibility(View.INVISIBLE);
-                                showTextView.setText("支付成功，3秒后返回");
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            Thread.sleep(3000);
-                                            finish();
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                            } else {
+                            //status 等于1，表示支付成功
+                            if (status != 1) {
                                 handler.postDelayed(validateRunnable, 10 * 1000);
+                                return;
                             }
+                            imageView.setVisibility(View.GONE);
+                            timer = new CountDownTimer(5000, 1000) {
+                                @Override
+                                public void onTick(long l) {
+                                    showTextView.setText("支付成功，还剩" + l / 1000 + "秒返回");
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    BuptPayActivity.this.finish();
+                                }
+                            };
+                            timer.start();
                         } catch (JSONException e) {
                             Log.e(TAG, e.getMessage());
                             handler.postDelayed(validateRunnable, 10 * 1000);
@@ -171,6 +181,9 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (timer != null) {
+            timer.cancel();
+        }
         cancleValide();
         cancle();
     }

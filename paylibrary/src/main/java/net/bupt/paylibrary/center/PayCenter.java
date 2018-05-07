@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 
 import net.bupt.paylibrary.CallBackResponseContent;
 import net.bupt.paylibrary.di.modules.RequestHelper;
+import net.bupt.paylibrary.entity.PayEntity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,11 +43,11 @@ public class PayCenter {
         return call;
     }
 
-    public Call<JsonElement> getData(String cardno, String prodcode,
-                                     String description, String total,
+    public Call<JsonElement> getData(PayEntity entity,
                                      CallBackResponseContent responseContent) {
         Call<JsonElement> call;
-        call = loadInterface.getData(cardno, prodcode, description, total);
+        call = loadInterface.getData(entity.getCardno(), entity.getProdcode(),
+                entity.getDescription(), entity.getTotal());
         deal(responseContent, call);
         return call;
     }

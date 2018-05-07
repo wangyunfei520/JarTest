@@ -21,6 +21,7 @@ import com.google.zxing.common.BitMatrix;
 
 import net.bupt.paylibrary.BuptPayActivity;
 import net.bupt.paylibrary.R;
+import net.bupt.paylibrary.entity.PayEntity;
 
 import java.io.UnsupportedEncodingException;
 
@@ -28,8 +29,9 @@ public class BuptPayUtils {
 
     private static final String TAG = "BuptPayUtils";
 
-    public static void go(Context context) {
+    public static void go(Context context, PayEntity entity) {
         Intent intent = new Intent(context, BuptPayActivity.class);
+        intent.putExtra("data", entity);
         context.startActivity(intent);
     }
 
@@ -73,8 +75,10 @@ public class BuptPayUtils {
         }
         return bitmap;
     }
+
     /**
      * 得到自定义的progressDialog
+     *
      * @param context
      * @param msg
      * @return

@@ -3,6 +3,7 @@ package net.bupt.paylibrary.utils;
 import android.content.Context;
 
 import net.bupt.paylibrary.di.modules.RequestHelper;
+import net.bupt.paylibrary.entity.PayEntity;
 
 
 /**
@@ -29,7 +30,7 @@ public class BuptPayManager {
      *
      * @param context 上下文
      */
-    public  void init(Context context) {
+    public void init(Context context) {
         BuptPayManager.context = context.getApplicationContext();
         RequestHelper.getInstance().init();
     }
@@ -48,7 +49,16 @@ public class BuptPayManager {
     private BuptPayManager() {
     }
 
-    public void pay(Context context) {
-        BuptPayUtils.go(context);
+    /**
+     * @param context
+     * @param cardno      ca卡号
+     * @param prodcode    产品编号
+     * @param description 描述
+     * @param total       价格
+     */
+    public void pay(Context context, String cardno,
+                    String prodcode, String description, String total) {
+        PayEntity entity = new PayEntity(cardno, prodcode, description, total);
+        BuptPayUtils.go(context, entity);
     }
 }
