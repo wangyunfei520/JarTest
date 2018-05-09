@@ -26,13 +26,12 @@ import net.bupt.paylibrary.utils.BuptPayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
-
 import retrofit2.Call;
 
 public class BuptPayActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "BuptPayActivity";
+    private String zhi_flag = "2", wechat_flag = "1";
 
     private Button zhiButton, wechatButton;
     private TextView showTextView;
@@ -71,20 +70,21 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
         btn.setCompoundDrawables(drawable, null, null, null);
     }
 
-    private void getData() {
+    private void getData(final String flag) {
         cancle();
         dialog = BuptPayUtils.createLoadingDialog(this, "正在请求数据");
         dialog.show();
         final int dimension = (int) getResources().getDimension(R.dimen.image_size);
-        call = PayCenter.getInstance().getData(entity, new CallBackResponseContent() {
+        call = PayCenter.getInstance().getData(flag, entity, new CallBackResponseContent() {
             @Override
             public void getResponseContent(String data) {
+                Log.v(TAG, data);
                 dialog.dismiss();
                 Bitmap result = null;
                 try {
                     final JSONObject object = new JSONObject(data);
                     if (object.getInt("status") != 0) {
-                        service_error();
+                        show_toast(object.getString("message"));
                         return;
                     }
                     JSONObject objectJSONObject = object.getJSONObject("data");
@@ -93,10 +93,14 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
                         data_error();
                         return;
                     }
-                    showTextView.setText("请使用微信扫码支付");
+                    String show = "请使用支付宝扫码支付";
+                    if (flag.equals(wechat_flag)) {
+                        show = "请使用微信扫码支付";
+                    }
+                    showTextView.setText(show);
                     imageView.setImageBitmap(result);
                     String sn = objectJSONObject.getString("sn");
-                    validate(sn);
+                    validate(sn, flag);
                 } catch (JSONException e) {
                     data_error();
                     Log.e(TAG, e.getMessage());
@@ -114,12 +118,12 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
 
     CountDownTimer timer = null;
 
-    private void validate(final String sn) {
+    private void validate(final String sn, final String flag) {
         cancleValide();
         validateRunnable = new Runnable() {
             @Override
             public void run() {
-                call = PayCenter.getInstance().validate(sn, new CallBackResponseContent() {
+                call = PayCenter.getInstance().validate(flag, sn, new CallBackResponseContent() {
                     @Override
                     public void getResponseContent(String result) {
                         try {
@@ -127,7 +131,7 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
                             int status = object.getInt("status");
                             //status 等于1，表示支付成功
                             if (status != 1) {
-                                handler.postDelayed(validateRunnable, 10 * 1000);
+                                handler.postDelayed(validateRunnable, 5 * 1000);
                                 return;
                             }
                             imageView.setVisibility(View.GONE);
@@ -199,9 +203,9 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.zhiBtn) {
-            show_toast("支付宝正在建设中。。");
+            getData(zhi_flag);
         } else if (i == R.id.wechatBtn) {
-            getData();
+            getData(wechat_flag);
         }
     }
 }

@@ -36,17 +36,17 @@ public class PayCenter {
         return instance;
     }
 
-    public Call<JsonElement> validate(String out_trade_no, CallBackResponseContent responseContent) {
+    public Call<JsonElement> validate(String flag, String out_trade_no, CallBackResponseContent responseContent) {
         Call<JsonElement> call;
-        call = loadInterface.validate(out_trade_no);
+        call = loadInterface.validate(out_trade_no, flag);
         deal(responseContent, call);
         return call;
     }
 
-    public Call<JsonElement> getData(PayEntity entity,
+    public Call<JsonElement> getData(String flag, PayEntity entity,
                                      CallBackResponseContent responseContent) {
         Call<JsonElement> call;
-        call = loadInterface.getData(entity.getCardno(), entity.getProdcode(),
+        call = loadInterface.getData(flag, entity.getCardno(), entity.getProdcode(),
                 entity.getDescription(), entity.getTotal());
         deal(responseContent, call);
         return call;

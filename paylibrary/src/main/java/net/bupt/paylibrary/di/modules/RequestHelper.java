@@ -38,15 +38,17 @@ public class RequestHelper {
      */
     public void init() {
         Requester.initBuilder(BuildConfig.DEBUG, 30);
+        //http://182.18.26.6:8080/PaymentPlatform/
+        //http://192.168.10.29:8080/
         requestAPI = Requester.getRequestAPI("http://182.18.26.6:8080/PaymentPlatform/", RequestApiService.class);
     }
 
-    public Call<JsonElement> getData(String cardno, String prodcode,
+    public Call<JsonElement> getData(String flag, String cardno, String prodcode,
                                      String description, String total) {
-        return requestAPI.getData(cardno, prodcode, description, total);
+        return requestAPI.getData(cardno, prodcode, description, total, flag);
     }
 
-    public Call<JsonElement> validate(String out_trade_no) {
-        return requestAPI.validate(out_trade_no);
+    public Call<JsonElement> validate(String out_trade_no, String flag) {
+        return requestAPI.validate(out_trade_no, flag);
     }
 }

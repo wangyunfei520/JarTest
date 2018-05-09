@@ -40,7 +40,7 @@
 -keep class net.bupt.paylibrary.utils.BuptPayManager{
     public *;
 }
--keep class net.bupt.paylibrary.entity.** { *; } #实体类不参与混淆
+#-keep class net.bupt.paylibrary.entity.** { *; } #实体类不参与混淆
 #==========zxing============
 -keep class com.google.** {*;}
 -dontwarn com.google.**

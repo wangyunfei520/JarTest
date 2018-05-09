@@ -12,6 +12,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BuptPayManager.getInstance().pay(this,"123321","123",
-                "test","0.01");
+                "test222","0.01");
     }
 }

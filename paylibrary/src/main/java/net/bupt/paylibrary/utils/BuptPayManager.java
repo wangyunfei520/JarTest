@@ -58,7 +58,6 @@ public class BuptPayManager {
      */
     public void pay(Context context, String cardno,
                     String prodcode, String description, String total) {
-        PayEntity entity = new PayEntity(cardno, prodcode, description, total);
-        BuptPayUtils.go(context, entity);
+        BuptPayUtils.go(context, new PayEntity(cardno, prodcode, description, total));
     }
 }
