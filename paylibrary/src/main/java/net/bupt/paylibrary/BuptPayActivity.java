@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -88,15 +89,15 @@ public class BuptPayActivity extends Activity implements View.OnClickListener {
                         return;
                     }
                     JSONObject objectJSONObject = object.getJSONObject("data");
-                    result = BuptPayUtils.encodeAsBitmap(objectJSONObject.getString("code_url"), dimension);
+                    result = BuptPayUtils.encodeAsBitmap(objectJSONObject.getString("code_url"),
+                            dimension,
+                            flag.equals(zhi_flag) ? BitmapFactory.decodeResource(getResources(), R.drawable.alipay2)
+                                    : BitmapFactory.decodeResource(getResources(), R.drawable.wechat2));
                     if (result == null) {
                         data_error();
                         return;
                     }
-                    String show = "请使用支付宝扫码支付";
-                    if (flag.equals(wechat_flag)) {
-                        show = "请使用微信扫码支付";
-                    }
+                    String show = flag.equals(wechat_flag) ? "请使用微信扫码支付" : "请使用支付宝扫码支付";
                     showTextView.setText(show);
                     imageView.setImageBitmap(result);
                     String sn = objectJSONObject.getString("sn");
