@@ -105,8 +105,8 @@ public class BuptPayUtils {
             return src;
         }
 
-        //logo大小为二维码整体大小的1/6
-        float scaleFactor = srcWidth * 1.0f / 6 / logoWidth;
+        //logo大小为二维码整体大小的1/7
+        float scaleFactor = srcWidth * 1.0f / 7 / logoWidth;
         Bitmap bitmap = Bitmap.createBitmap(srcWidth, srcHeight, Bitmap.Config.ARGB_8888);
         try {
             Canvas canvas = new Canvas(bitmap);

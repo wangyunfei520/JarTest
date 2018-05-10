@@ -23,41 +23,26 @@ public class BuptPayManager {
         return instance;
     }
 
-    private static Context context;
 
     /**
      * 初始化工具类
      *
-     * @param context 上下文
      */
-    public void init(Context context) {
-        BuptPayManager.context = context.getApplicationContext();
+    public void init() {
         RequestHelper.getInstance().init();
     }
-
-    /**
-     * 获取ApplicationContext
-     *
-     * @return ApplicationContext
-     */
-    public Context getContext() {
-        if (context != null) return context;
-        throw new NullPointerException("u should init first");
-    }
-
 
     private BuptPayManager() {
     }
 
     /**
-     * @param context
      * @param cardno      ca卡号
      * @param prodcode    产品编号
      * @param description 描述
      * @param total       价格
      */
-    public void pay(Context context, String cardno,
+    public void pay(Context mContext,String cardno,
                     String prodcode, String description, String total) {
-        BuptPayUtils.go(context, new PayEntity(cardno, prodcode, description, total));
+        BuptPayUtils.go(mContext, new PayEntity(cardno, prodcode, description, total));
     }
 }
